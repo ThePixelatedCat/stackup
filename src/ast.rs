@@ -2,15 +2,13 @@ use std::fmt::Display;
 
 pub type Ast = Vec<Expr>;
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum Expr {
     Value(Val),
     Opcall(String),
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum Val {
     Number(f64),
     Text(String),
@@ -19,7 +17,10 @@ pub enum Val {
 
 impl Display for Val {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let name = match self {Self::Number(_) => "Number", Self::Text(_) => "Text", Self::AnonOp(_) => "AnonOp"};
-        write!(f, "{name}")
+        match self {
+            Self::Number(n) => write!(f, "{n}"),
+            Self::Text(t) => write!(f, "{t}"),
+            Self::AnonOp(e) => write!(f, "{e:?}"),
+        }
     }
 }

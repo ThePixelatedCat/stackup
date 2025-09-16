@@ -1,5 +1,16 @@
-'hello' {'hello world' print} def 
-"three" {3} def
-three 5 add
-to_string print
-hello
+"true" {1} def
+"false" {0} def
+"prtl" {dup prt} def
+"fib" { dup dup 1 eq swp 2 eq or {pop 1} {dup 1 sub swp 2 sub fib swp fib add} if } def
+
+1 fib
+2 fib
+3 fib
+4 fib
+5 fib
+6 fib
+7 fib
+8 fib
+9 fib
+10 fib
+stk

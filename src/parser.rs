@@ -1,4 +1,4 @@
-use crate::ast::{Expr, Val, Ast};
+use crate::ast::{Ast, Expr, Val};
 use nom::branch::alt;
 use nom::character::complete::{char, multispace0, multispace1, none_of, one_of, satisfy};
 use nom::multi::{many0, many1, separated_list1};
