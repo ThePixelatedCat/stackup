@@ -1,0 +1,5 @@
+'hello' {'hello world' print} def 
+"three" {3} def
+three 5 add
+to_string print
+hello

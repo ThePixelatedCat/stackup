@@ -1,0 +1,4 @@
+prog = expr*
+
+expr = value | op_name
+value = -? [:digit:]+ (.[:digit:]+)? | ' [[:alnum:][:punct:][:space:]]* ' | \{ expr* \}
