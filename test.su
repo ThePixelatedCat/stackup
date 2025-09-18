@@ -2,6 +2,7 @@
 "false" {0} def
 "prtl" {dup prt} def
 "fib" { dup dup 1 eq swp 2 eq or {pop 1} {dup 1 sub swp 2 sub fib swp fib add} if } def
+"for" { swp dup 0 eq {pop pop} {swp dup evl swp 1 sub swp for} if } def
 
 1 fib
 2 fib
