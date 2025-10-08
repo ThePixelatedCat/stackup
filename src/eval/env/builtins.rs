@@ -145,8 +145,8 @@ fn not(env: &mut Env) -> OpResult<()> {
 }
 
 fn if_(env: &mut Env) -> OpResult<()> {
-    let el = env.pop_anonop()?;
-    let th = env.pop_anonop()?;
+    let el = env.pop_block()?;
+    let th = env.pop_block()?;
     let cond = env.pop_num().map(|n| n > 0.)?;
 
     let to_run = if cond {th} else {el};
@@ -178,7 +178,7 @@ fn swp(env: &mut Env) -> OpResult<()> {
 }
 
 fn def(env: &mut Env) -> OpResult<()> {
-    let body = env.pop_anonop()?;
+    let body = env.pop_block()?;
     let name = env.pop_text()?;
 
     if name.contains([' ', '\t', '\n', '\r', '{', '}']) {
@@ -193,7 +193,7 @@ fn def(env: &mut Env) -> OpResult<()> {
 }
 
 fn evl(env: &mut Env) -> OpResult<()> {
-    let body = env.pop_anonop()?;
+    let body = env.pop_block()?;
     for expr in body {
         eval::eval_expr(expr, env)?;
     }

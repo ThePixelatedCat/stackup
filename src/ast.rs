@@ -12,7 +12,7 @@ pub enum Expr {
 pub enum Val {
     Number(f64),
     Text(String),
-    AnonOp(Vec<Expr>),
+    Block(Vec<Expr>),
 }
 
 impl Display for Val {
@@ -20,7 +20,7 @@ impl Display for Val {
         match self {
             Self::Number(n) => write!(f, "{n}"),
             Self::Text(t) => write!(f, "{t}"),
-            Self::AnonOp(e) => write!(f, "{e:?}"),
+            Self::Block(e) => write!(f, "{e:?}"),
         }
     }
 }

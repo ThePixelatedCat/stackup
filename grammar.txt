@@ -1,5 +1,10 @@
 prog = expr*
 
 expr = value | op_name
-value = -? [:digit:]+ (.[:digit:]+)? | ' [[:alnum:][:punct:][:space:]]* ' | \{ expr* \}
-op_name = [[:alpha:]_]+
+
+value =  num | text | block
+num = -?[0-9]*(.[0-9]+)?
+text = ' [[:alnum:][:punct:][:space:]]* '
+block = \{(expr )*expr\}
+
+op_name = [a-zA-Z_]+

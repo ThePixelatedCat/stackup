@@ -25,7 +25,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 #[cfg(test)]
 mod test {
-    use super::grammar::{ValueParser, TextParser, NumParser, AnonOpParser, ExprParser, OpnameParser, ExprsParser};
+    use super::grammar::{ValueParser, TextParser, NumParser, BlockParser, ExprParser, OpnameParser, ExprsParser};
     use crate::ast::{Expr, Val};
 
     #[test]
@@ -65,16 +65,16 @@ mod test {
     }
 
     #[test]
-    fn exprs() {
-        let anonop = vec![Expr::Value(Val::Number(1.0)), Expr::Value(Val::Number(3.0)), Expr::Value(Val::Number(4.0))];
-        assert_eq!(anonop, ExprsParser::new().parse(r#" 1 4 "#).unwrap());
+    fn test_exprs() {
+        let block = vec![Expr::Value(Val::Number(1.0)), Expr::Value(Val::Number(3.0)), Expr::Value(Val::Number(4.0))];
+        assert_eq!(block, ExprsParser::new().parse(r#"1 3 4"#).unwrap());
     }
 
     #[test]
-    fn anon_op() {
-        let anonop = vec![Expr::Value(Val::Number(1.0)), Expr::Value(Val::Number(3.0)), Expr::Value(Val::Number(4.0))];
-        assert_eq!(anonop, AnonOpParser::new().parse(r#"{1 3 4}"#).unwrap());
-        assert_eq!(anonop, AnonOpParser::new().parse(r#"{ 1 3 4 }"#).unwrap());
+    fn test_block() {
+        let block = vec![Expr::Value(Val::Number(1.0)), Expr::Value(Val::Number(3.0)), Expr::Value(Val::Number(4.0))];
+        assert_eq!(block, BlockParser::new().parse(r#"{1 3 4}"#).unwrap());
+        assert_eq!(block, BlockParser::new().parse(r#"{ 1 3 4 }"#).unwrap());
         assert!(NumParser::new().parse(r#"{}"#).is_err());
     }
 }

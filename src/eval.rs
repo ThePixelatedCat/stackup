@@ -10,7 +10,7 @@ use env::Env;
 pub enum Type {
     Text,
     Number,
-    AnonOp,
+    Block,
 }
 
 impl Display for Type {
@@ -18,7 +18,7 @@ impl Display for Type {
         let name = match self {
             Self::Text => "Text",
             Self::Number => "Number",
-            Self::AnonOp => "AnonOp",
+            Self::Block => "Body",
         };
         write!(f, "{name}")
     }
@@ -29,7 +29,7 @@ impl From<&Val> for Type {
         match value {
             Val::Number(_) => Self::Number,
             Val::Text(_) => Self::Text,
-            Val::AnonOp(_) => Self::AnonOp,
+            Val::Block(_) => Self::Block,
         }
     }
 }

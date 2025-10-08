@@ -71,14 +71,14 @@ impl Env {
         }
     }
 
-    pub fn pop_anonop(&mut self) -> OpResult<Vec<Expr>> {
+    pub fn pop_block(&mut self) -> OpResult<Vec<Expr>> {
         let temp = self.stack.pop()?;
 
-        if let Val::AnonOp(b) = temp {
+        if let Val::Block(b) = temp {
             Ok(b)
         } else {
             Err(OpErr::TypeMismatch {
-                expected: Type::AnonOp,
+                expected: Type::Block,
                 found: (&temp).into(),
             })
         }
