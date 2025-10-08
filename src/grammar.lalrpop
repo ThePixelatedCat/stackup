@@ -2,8 +2,6 @@ use crate::ast::{Expr, Val};
 
 grammar;
 
-pub Prog = Exprs;
-
 pub Expr: Expr = {
     <v:Value> => Expr::Value(v),
     <n:Opname> => Expr::Opname(n.to_owned())
@@ -17,8 +15,11 @@ pub Value: Val = {
 
 pub Num: f64 = r"-?[0-9]*(\.[0-9]+)?" => <>.parse().unwrap();
 pub Text: String = r#"('.*')|(".*")"# => <>.trim_matches(&['"', '\'']).to_owned();
-pub Block = r"\{"<Exprs>r"\}";
+pub Block = "{"<ExprList>"}";
+
+ExprList: Vec<Expr> = {
+    Expr => vec![<>],
+    <mut v:ExprList> "," <e:Expr> => {v.push(e); v}
+};
 
 pub Opname = <r"[a-zA-Z_]+">;
-
-pub Exprs: Vec<Expr> = (<Expr>)*;

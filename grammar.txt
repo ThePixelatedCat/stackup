@@ -1,10 +1,9 @@
-prog = expr*
-
 expr = value | op_name
 
 value =  num | text | block
 num = -?[0-9]*(.[0-9]+)?
 text = ' [[:alnum:][:punct:][:space:]]* '
-block = \{(expr )*expr\}
+block = \{exprlist\}
+exprlist = (exprlist,)?expr
 
 op_name = [a-zA-Z_]+

@@ -1,89 +1,58 @@
-use std::{error::Error, fmt::Display};
+use std::{collections::HashMap,rc::Rc};
 
-use crate::ast::{Ast, Expr, Val};
+use crate::ast::{Expr};
 
-mod env;
+mod builtins;
+mod err;
+mod stack;
 
-use env::Env;
+use err::{OpErr, OpResult, Type};
+use stack::Stack;
 
-#[derive(Debug, PartialEq)]
-pub enum Type {
-    Text,
-    Number,
-    Block,
-}
+type OpFn = dyn Fn(&mut Stack, *mut Dict) -> OpResult<()>;
+#[derive(Clone)]
+struct Dict(HashMap<String, Rc<OpFn>>);
 
-impl Display for Type {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let name = match self {
-            Self::Text => "Text",
-            Self::Number => "Number",
-            Self::Block => "Body",
-        };
-        write!(f, "{name}")
+impl Dict {
+    fn get(&self, name: &str) -> Option<&OpFn> {
+        self.0.get(name).map(|v| &**v)
+    }
+
+    fn bind(&mut self, name: String, fun: Box<OpFn>) {
+        self.0.insert(name, Rc::new(fun));
     }
 }
 
-impl From<&Val> for Type {
-    fn from(value: &Val) -> Self {
-        match value {
-            Val::Number(_) => Self::Number,
-            Val::Text(_) => Self::Text,
-            Val::Block(_) => Self::Block,
+fn build_op(body: Vec<Expr>) -> impl Fn(&mut Stack, *mut Dict) -> OpResult<()> {
+    move |s, d| {
+        for expr in &body {
+            eval_expr(expr.clone(), s, unsafe { &mut *d })?;
         }
+        Ok(())
     }
 }
 
-#[derive(Debug)]
-pub enum OpErr {
-    TypeMismatch { expected: Type, found: Type },
-    MissingVals { expected: u32, found: u32 },
-    UnknownOp(String),
-    InvalidVal { val: Val, desc: String },
+fn eval_opcall(name: &str, stack: &mut Stack, dict: &mut Dict) -> OpResult<()> {
+    let dict_ptr = &raw mut *dict;
+    let fun = dict.get(name).ok_or(OpErr::UnknownOp(name.to_owned()))?;
+    fun(stack, dict_ptr)
 }
 
-impl Display for OpErr {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::TypeMismatch { expected, found } => {
-                write!(f, "Expected a {expected}, found a {found}")
-            }
-            Self::MissingVals { expected, found } => write!(
-                f,
-                "Expected at least {expected} items on the stack, found {found}"
-            ),
-            Self::UnknownOp(n) => write!(f, "Operation {n} not bound"),
-            Self::InvalidVal { val, desc } => write!(f, "Invalid value {val}, {desc}"),
-        }
-    }
-}
-impl Error for OpErr {}
-
-type OpResult<T> = Result<T, OpErr>;
-
-fn eval_opcall(env: &mut Env, name: &str) -> OpResult<()> {
-    if let Some(e) = env.find_op(name)? {
-        for expr in e.clone() {
-            eval_expr(expr, env)?;
-        }
-    }
-    Ok(())
-}
-
-pub fn eval_expr(expr: Expr, env: &mut Env) -> OpResult<()> {
+fn eval_expr(expr: Expr, stack: &mut Stack, dict: &mut Dict) -> OpResult<()> {
     match expr {
-        Expr::Opname(name) => eval_opcall(env, &name)?,
-        Expr::Value(v) => env.push(v),
+        Expr::Opname(name) => eval_opcall(&name, stack, dict)?,
+        Expr::Value(v) => stack.push(v),
     }
-
     Ok(())
 }
 
-pub fn eval_full(ast: Ast) -> OpResult<()> {
-    let mut env = Env::new();
+pub fn eval_full(ast: Vec<Expr>) -> OpResult<()> {
+    let mut stack = Stack::new();
+    let mut dict: Dict = Dict(HashMap::new());
+    builtins::insert(&mut dict);
 
     for expr in ast {
-        eval_expr(expr, &mut env)?;
+        eval_expr(expr, &mut stack, &mut dict)?;
     }
     Ok(())
 }
