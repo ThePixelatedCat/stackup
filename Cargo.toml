@@ -3,5 +3,10 @@ name = "stackup"
 version = "0.1.0"
 edition = "2024"
 
+[build-dependencies]
+lalrpop = "0.22.2"
+
 [dependencies]
+lalrpop = "0.22.2"
+lalrpop-util = { version = "0.22.2", features = ["lexer", "unicode"] }
 nom = "8.0.0"

@@ -72,7 +72,7 @@ fn eval_opcall(env: &mut Env, name: &str) -> OpResult<()> {
 
 pub fn eval_expr(expr: Expr, env: &mut Env) -> OpResult<()> {
     match expr {
-        Expr::Opcall(name) => eval_opcall(env, &name)?,
+        Expr::Opname(name) => eval_opcall(env, &name)?,
         Expr::Value(v) => env.push(v),
     }
 

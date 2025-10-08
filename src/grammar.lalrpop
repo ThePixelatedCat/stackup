@@ -1,0 +1,34 @@
+use crate::ast::{Expr, Val};
+
+grammar;
+
+pub Prog = Exprs;
+
+pub Value: Val = {
+    <Num> => Val::Number(<>),
+    <Text> => Val::Text(<>),
+    <AnonOp> => Val::AnonOp(<>)
+};
+
+pub Expr: Expr = {
+    <v:Value> => Expr::Value(v),
+    <n:Opname> => Expr::Opname(n.to_owned())
+}
+
+pub Num: f64 = r"-?[0-9]+(\.[0-9]+)?" => <>.parse().unwrap();
+pub Text: String = r#"('.*')|(".*")"# => <>.trim_matches(&['"', '\'']).to_owned();
+pub AnonOp = r"\{"<Exprs>r"\}";
+
+pub Opname = <r"[a-zA-Z_]+">;
+
+pub Exprs = WhiteSep<Expr>;
+
+WhiteSep<T>: Vec<T> = {
+    <mut v:(<T> " ")*> <e:T?> => match e {
+        None => v,
+        Some(e) => {
+            v.push(e);
+            v
+        }
+    }
+};

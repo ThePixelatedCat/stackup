@@ -2,13 +2,13 @@ use std::fmt::Display;
 
 pub type Ast = Vec<Expr>;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Expr {
     Value(Val),
-    Opcall(String),
+    Opname(String),
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Val {
     Number(f64),
     Text(String),
