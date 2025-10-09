@@ -3,11 +3,18 @@
 
 use lalrpop_util::lalrpop_mod;
 
-pub use eval::eval_full;
+pub use ast::Program;
+pub use eval::eval_expr;
 pub use grammar::ExprParser;
 
+use {dict::Dict, stack::Stack};
+
 mod ast;
+mod builtins;
+mod dict;
+mod err;
 mod eval;
+mod stack;
 
 lalrpop_mod!(
     #[rustfmt::skip]
@@ -17,6 +24,10 @@ lalrpop_mod!(
     #[allow(clippy::style)]
     grammar
 );
+
+pub fn init_env() -> (Stack, Dict) {
+    Default::default()
+}
 
 #[cfg(test)]
 mod test {

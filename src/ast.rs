@@ -1,5 +1,7 @@
 use std::fmt::Display;
 
+pub type Program = Vec<Expr>;
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum Expr {
     Value(Val),

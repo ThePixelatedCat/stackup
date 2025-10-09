@@ -2,17 +2,13 @@ use std::fmt::Display;
 
 use crate::{
     ast::{Expr, Val},
-    eval::{OpErr, OpResult, Type},
+    err::{OpErr, OpResult, Type},
 };
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Stack(Vec<Val>);
 
 impl Stack {
-    pub fn new() -> Self {
-        Self(Vec::new())
-    }
-
     pub fn push(&mut self, item: Val) {
         self.0.push(item);
     }

@@ -1,4 +1,4 @@
-use crate::{ast::Val};
+use crate::ast::Val;
 use std::{error::Error, fmt::Display};
 
 pub type OpResult<T> = Result<T, OpErr>;
