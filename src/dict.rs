@@ -42,6 +42,7 @@ impl Default for Dict {
         temp.bind("swp".to_string(), Box::new(swp));
 
         temp.bind("def".to_string(), Box::new(def));
+        temp.bind("evl".to_string(), Box::new(evl));
 
         temp.bind("prt".to_string(), Box::new(prt));
         temp.bind(

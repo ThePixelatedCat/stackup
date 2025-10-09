@@ -154,6 +154,14 @@ pub fn def(stack: &mut Stack, dict: &mut Dict) -> OpResult<()> {
     Ok(())
 }
 
+pub fn evl(stack: &mut Stack, dict: &mut Dict) -> OpResult<()> {
+    let body = stack.pop_block()?;
+    for expr in body {
+        eval::eval_expr(&expr, stack, dict)?;
+    }
+    Ok(())
+}
+
 pub fn prt(stack: &mut Stack, _: &mut Dict) -> OpResult<()> {
     println!("{}", stack.pop()?);
     Ok(())
