@@ -52,7 +52,7 @@ pub fn comp<F: Fn(&f64, &f64) -> bool>(stack: &mut Stack, op: F) -> OpResult<()>
             e
         }
     })?;
-    let result = if op(&n1, &n2) { 1. } else { 0. };
+    let result = if op(&n2, &n1) { 1. } else { 0. };
     stack.push(Val::Number(result));
     Ok(())
 }
@@ -78,7 +78,7 @@ pub fn log<F: Fn(bool, bool) -> bool>(stack: &mut Stack, op: F) -> OpResult<()> 
             e
         }
     })?;
-    let result = if op(n1, n2) { 1. } else { 0. };
+    let result = if op(n2, n1) { 1. } else { 0. };
     stack.push(Val::Number(result));
     Ok(())
 }
